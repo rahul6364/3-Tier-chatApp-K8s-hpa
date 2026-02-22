@@ -39,7 +39,7 @@ This project aims to provide a real-time chat experience that's both scalable an
 * **Backend:** Node.js, Express, MongoDB, Socket.io
 * **Frontend:** React, TailwindCSS
 * **Containerization:** Docker
-* **Orchestration:** Kubernetes (planned)
+* **Orchestration:** Kubernetes with HPA (Horizontal Pod Autoscaling)
 * **Web Server:** Nginx
 * **State Management:** Zustand
 * **Authentication:** JWT
@@ -72,10 +72,10 @@ PORT=5001
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/iemafzalhassan/full-stack_chatApp.git
+git clone <your-repository-url>
 ```
 
-## 🏗️ Build and Run the Application"
+## 🏗️ Build and Run the Application
 
 Follow these steps to build and run the application:
 
@@ -100,7 +100,7 @@ http://localhost
 Follow these simple steps to get the project up and running on your local Host using docker.
 
 ```bash
-git clone https://github.com/iemafzalhassan/full-stack_chatApp.git
+git clone <your-repository-url>
 ```
 
 ```bash
@@ -159,7 +159,7 @@ docker run -d --network=full-stack --add-host=host.docker.internal:host-gateway 
 
 `Backend API: http://localhost:5001`
 
-### To Verify the conncetion between backend and databse:
+### To Verify the connection between backend and database:
 ```bash
 docker-compose logs -f
 ```
@@ -173,25 +173,69 @@ You can now interact with the real-time chat app and start messaging!
 
 ---
 
+## ☸️ Kubernetes Deployment
+
+This project includes Kubernetes manifests for deploying the application with Horizontal Pod Autoscaling (HPA) configured for improved reliability and scalability.
+
+### Prerequisites for Kubernetes:
+* **Kubernetes cluster** (Minikube, EKS, GKE, AKS, or any other K8s cluster)
+* **kubectl** configured to access your cluster
+
+### Deploy to Kubernetes:
+
+1. **Create namespace:**
+```bash
+kubectl apply -f k8s/namespace.yml
+```
+
+2. **Create secrets:**
+```bash
+kubectl apply -f k8s/secrets.yml
+```
+
+3. **Deploy MongoDB:**
+```bash
+kubectl apply -f k8s/mongodb-pv.yml
+kubectl apply -f k8s/mongodb-pvc.yml
+kubectl apply -f k8s/mongodb-deployment.yml
+kubectl apply -f k8s/mongodb-service.yml
+```
+
+4. **Deploy Backend:**
+```bash
+kubectl apply -f k8s/backend-deployment.yml
+kubectl apply -f k8s/backend-service.yml
+kubectl apply -f k8s/backend-hpa.yml
+```
+
+5. **Deploy Frontend:**
+```bash
+kubectl apply -f k8s/frontend-deployment.yml
+kubectl apply -f k8s/frontend-service.yml
+kubectl apply -f k8s/frontend-hpa.yml
+```
+
+6. **Deploy Ingress (if using):**
+```bash
+kubectl apply -f k8s/ingress.yml
+```
+
+### HPA Configuration:
+- **Backend HPA:** Scales between 2-10 replicas based on CPU (70%) and memory (80%) utilization
+- **Frontend HPA:** Scales between 2-8 replicas based on CPU (70%) and memory (80%) utilization
+- Both HPA configurations include optimized scaling policies for responsive autoscaling
+
+---
+
 
 
 ### 🤝 Contributing
 
-
-We welcome contributions from DevOps & Developer of all skill levels! Here's how you can contribute:
+Contributions are welcome! If you'd like to contribute to this project:
 
 **Report bugs:** If you encounter any bugs or issues, please open an issue with detailed information.
-**Suggest features:** Have an idea for a new feature? Open an issue to discuss it with the community.
+**Suggest features:** Have an idea for a new feature? Open an issue to discuss it.
 **Submit pull requests:** If you have a fix or a feature you'd like to contribute, submit a pull request. Ensure your changes pass any linting or tests, if applicable.
-
-### 🌐 Join the Community
-
-We invite you to join our community of developers and contributors. Let's work together to build an amazing real-time chat application!
-
-* **Star this repository** to show your support
-* **Fork this repository** to contribute to the project
-* **Open an issue** to report bugs or suggest features
-* **Submit a pull request** to contribute code changes
 
 ## 🔮 Future Plans
 
@@ -199,7 +243,7 @@ We invite you to join our community of developers and contributors. Let's work t
 This project is evolving, and here are a few exciting things on the horizon:
 
 * [ ] **CI/CD Pipelines:** Implement Continuous Integration and Continuous Deployment pipelines to automate testing and deployment.
-* [ ] **Kubernetes (K8s):** Add Kubernetes manifests for container orchestration to deploy the app on cloud platforms like AWS, GCP, or Azure.
+* [x] **Kubernetes (K8s):** Kubernetes manifests with HPA (Horizontal Pod Autoscaling) configured for container orchestration to deploy the app on cloud platforms like AWS, GCP, or Azure.
 * [ ] **Feature Expansion:** Add more features like group chats, media sharing, and user status updates.
 * **Stay tuned for updates as we continue to improve and expand this project!**
 
